@@ -9,7 +9,7 @@ class LoginContainer extends Component {
             isLoggedIn: false,
             error: '',
             formSubmitting: false,
-            account: {
+            user: {
                 email: '',
                 password: '',
             },
@@ -23,7 +23,7 @@ class LoginContainer extends Component {
         let state = localStorage["appState"];
         if (state) {
             let AppState = JSON.parse(state);
-            this.setState({ isLoggedIn: AppState.isLoggedIn, account: AppState });
+            this.setState({ isLoggedIn: AppState.isLoggedIn, user: AppState });
         }
     }
     componentDidMount() {
@@ -35,25 +35,25 @@ class LoginContainer extends Component {
     handleSubmit(e) {
         e.preventDefault();
         this.setState({ formSubmitting: true });
-        let userData = this.state.account;
+        let userData = this.state.user;
         axios.post("http://127.0.0.1:8000/api/auth/login", userData).then(response => {
             return response;
         }).then(json => {
             if (json.data.success) {
                 let userData = {
                     id: json.data.id,
-                    username: json.data.username,
+                    name: json.data.name,
                     email: json.data.email,
                     access_token: json.data.access_token,
                 };
                 let appState = {
                     isLoggedIn: true,
-                    account: userData
+                    user: userData
                 };
                 localStorage["appState"] = JSON.stringify(appState);
                 this.setState({
                     isLoggedIn: appState.isLoggedIn,
-                    account: appState.account,
+                    user: appState.user,
                     error: ''
                 });
                 window.location.reload()
@@ -91,16 +91,16 @@ class LoginContainer extends Component {
     handleEmail(e) {
         let value = e.target.value;
         this.setState(prevState => ({
-            account: {
-                ...prevState.account, email: value
+            user: {
+                ...prevState.user, email: value
             }
         }));
     }
     handlePassword(e) {
         let value = e.target.value;
         this.setState(prevState => ({
-            account: {
-                ...prevState.account, password: value
+            user: {
+                ...prevState.user, password: value
             }
         }));
     }

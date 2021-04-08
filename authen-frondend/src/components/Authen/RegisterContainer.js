@@ -12,8 +12,8 @@ class RegisterContainer extends Component {
             error: '',
             errorMessage: '',
             formSubmitting: false,
-            account: {
-                username: '',
+            user: {
+                name: '',
                 email: '',
                 password: '',
                 password_confirmation: '',
@@ -32,7 +32,7 @@ class RegisterContainer extends Component {
         let state = localStorage["appState"];
         if (state) {
             let AppState = JSON.parse(state);
-            this.setState({ isLoggedIn: AppState.isLoggedIn, account: AppState });
+            this.setState({ isLoggedIn: AppState.isLoggedIn, user: AppState });
         }
         if (this.state.isRegistered) {
             return this.props.history.push("/dashboard");
@@ -50,26 +50,26 @@ class RegisterContainer extends Component {
         e.preventDefault();
         this.setState({ formSubmitting: true });
         ReactDOM.findDOMNode(this).scrollIntoView();
-        let userData = this.state.account;
-        axios.post("http://127.0.0.1:8000/api/auth/signup", userData)
+        let userData = this.state.user;
+        axios.post("http://127.0.0.1:8000/api/auth/register", userData)
             .then(response => {
                 return response;
             }).then(json => {
                 if (json.data.success) {
                     let userData = {
                         id: json.data.id,
-                        username: json.data.username,
+                        name: json.data.name,
                         email: json.data.email,
                         activation_token: json.data.activation_token,
                     };
                     let appState = {
                         isRegistered: true,
-                        account: userData
+                        user: userData
                     };
                     localStorage["appState"] = JSON.stringify(appState);
                     this.setState({
                         isRegistered: appState.isRegistered,
-                        account: appState.account
+                        user: appState.user
                     });
                 } else {
                     alert(`Our System Failed To Register Your Account!`);
@@ -104,8 +104,8 @@ class RegisterContainer extends Component {
     handleName(e) {
         let value = e.target.value;
         this.setState(prevState => ({
-            account: {
-                ...prevState.account, username: value
+            user: {
+                ...prevState.user, name: value
             }
         }));
     }
@@ -113,24 +113,24 @@ class RegisterContainer extends Component {
     handleEmail(e) {
         let value = e.target.value;
         this.setState(prevState => ({
-            account: {
-                ...prevState.account, email: value
+            user: {
+                ...prevState.user, email: value
             }
         }));
     }
     handlePassword(e) {
         let value = e.target.value;
         this.setState(prevState => ({
-            account: {
-                ...prevState.account, password: value
+            user: {
+                ...prevState.user, password: value
             }
         }));
     }
     handlePasswordConfirm(e) {
         let value = e.target.value;
         this.setState(prevState => ({
-            account: {
-                ...prevState.account, password_confirmation: value
+            user: {
+                ...prevState.user, password_confirmation: value
             }
         }));
     }
@@ -162,7 +162,7 @@ class RegisterContainer extends Component {
                             </ul></FlashMessage> : ''}
                         <form onSubmit={this.handleSubmit}>
                             <div className="form-group">
-                                <input id="username" type="text" name="username" placeholder="Name" className="form-control" onChange={this.handleName} />
+                                <input id="username" type="text" name="name" placeholder="Name" className="form-control" onChange={this.handleName} />
                             </div>
                             <div className="form-group">
                                 <input id="email" type="email" name="email" placeholder="E-mail" className="form-control" onChange={this.handleEmail} />
